@@ -33,6 +33,7 @@ type Config = {
     validityDays: number
     showSignature: boolean
     itemCount: number
+    logo: string
 }
 
 interface EditorSidebarProps {
@@ -44,7 +45,55 @@ interface EditorSidebarProps {
     className?: string
 }
 
+import { createClient } from "@/utils/supabase/client"
+
 function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, className }: EditorSidebarProps) {
+    const [isUploading, setIsUploading] = useState(false)
+
+    const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return
+
+        const file = e.target.files[0]
+
+        // Validation
+        if (file.size > 2 * 1024 * 1024) { // 2MB
+            toast.error("Logo mag maximaal 2MB zijn.")
+            return
+        }
+
+        if (!['image/jpeg', 'image/png'].includes(file.type)) {
+            toast.error("Alleen JPG of PNG bestanden zijn toegestaan.")
+            return
+        }
+
+        setIsUploading(true)
+        try {
+            const supabase = createClient()
+            const fileExt = file.name.split('.').pop()
+            const fileName = `${Date.now()}_logo.${fileExt}`
+
+            // Upload to 'logos' bucket
+            const { error: uploadError } = await supabase.storage
+                .from('logos')
+                .upload(fileName, file)
+
+            if (uploadError) throw uploadError
+
+            // Get Public URL
+            const { data } = supabase.storage
+                .from('logos')
+                .getPublicUrl(fileName)
+
+            updateConfig('logo', data.publicUrl)
+            toast.success("Logo succesvol geüpload!")
+        } catch (error) {
+            console.error("Upload error:", error)
+            toast.error("Kon logo niet uploaden.")
+        } finally {
+            setIsUploading(false)
+        }
+    }
+
     return (
         <div className={cn("flex flex-col h-full bg-slate-950 text-slate-50", className)}>
             <div className="p-4 border-b border-slate-800">
@@ -92,9 +141,36 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
                                     </div>
                                     <div className="space-y-2">
                                         <Label className="text-slate-400">Logo</Label>
-                                        <div className="border border-dashed border-slate-800 rounded-md p-4 flex flex-col items-center justify-center bg-slate-900/50 hover:bg-slate-900 transition-colors cursor-pointer">
-                                            <Upload className="h-4 w-4 text-slate-500 mb-2" />
-                                            <span className="text-xs text-slate-500">Sleep logo hierheen</span>
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                id="logo-upload"
+                                                className="hidden"
+                                                accept="image/png, image/jpeg"
+                                                onChange={handleLogoUpload}
+                                                disabled={isUploading}
+                                            />
+                                            <label
+                                                htmlFor="logo-upload"
+                                                className={cn(
+                                                    "border border-dashed border-slate-800 rounded-md p-4 flex flex-col items-center justify-center bg-slate-900/50 hover:bg-slate-900 transition-colors cursor-pointer min-h-[100px]",
+                                                    isUploading && "opacity-50 cursor-not-allowed"
+                                                )}
+                                            >
+                                                {isUploading ? (
+                                                    <Loader2 className="h-4 w-4 text-slate-500 animate-spin" />
+                                                ) : config.logo ? (
+                                                    <div className="flex flex-col items-center gap-2">
+                                                        <img src={config.logo} alt="Logo Preview" className="h-8 max-w-[120px] object-contain" />
+                                                        <span className="text-xs text-orange-500">Klik om te wijzigen</span>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <Upload className="h-4 w-4 text-slate-500 mb-2" />
+                                                        <span className="text-xs text-slate-500">Sleep logo hierheen of klik</span>
+                                                    </>
+                                                )}
+                                            </label>
                                         </div>
                                     </div>
                                 </AccordionContent>
@@ -205,7 +281,8 @@ export default function ConfiguratorPage() {
         showVat: true,
         validityDays: 14,
         showSignature: true,
-        itemCount: 25
+        itemCount: 25,
+        logo: ""
     })
     const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
@@ -354,8 +431,12 @@ export default function ConfiguratorPage() {
                                             {/* Header (Identiteit) */}
                                             <div className={cn("flex justify-between items-start mb-12 border-b-2 pb-8", getAccentClass('border'))}>
                                                 {/* Links: Logo */}
-                                                <div className={cn("w-32 h-16 rounded flex items-center justify-center text-xs", getAccentClass('bg'), "text-white")}>
-                                                    LOGO
+                                                <div className={cn("w-32 h-16 rounded flex items-center justify-center text-xs overflow-hidden", getAccentClass('bg'), !config.logo && "text-white")}>
+                                                    {config.logo ? (
+                                                        <img src={config.logo} alt="Bedrijfslogo" className="h-full w-full object-contain bg-white" />
+                                                    ) : (
+                                                        "LOGO"
+                                                    )}
                                                 </div>
 
                                                 {/* Rechts: Bedrijfsgegevens */}
