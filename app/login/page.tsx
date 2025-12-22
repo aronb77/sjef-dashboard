@@ -1,7 +1,10 @@
+import { Suspense } from 'react'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { LoginForm } from './login-form'
+
+export const dynamic = 'force-dynamic'
 
 export default async function LoginPage() {
     const supabase = await createClient()
@@ -33,7 +36,9 @@ export default async function LoginPage() {
 
             {/* RIGHT COLUMN: FORM */}
             <div className="flex-1 bg-white flex items-center justify-center p-8">
-                <LoginForm />
+                <Suspense fallback={<div>Laden...</div>}>
+                    <LoginForm />
+                </Suspense>
             </div>
         </div>
     )
