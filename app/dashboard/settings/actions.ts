@@ -27,7 +27,7 @@ export async function updatePdfSettings(settings: any) {
     }
 
     // 3. Revalidate
-    revalidatePath('/dashboard/configurator')
+    revalidatePath('/dashboard/settings')
     return { success: true }
 }
 

@@ -15,7 +15,7 @@ const menuItems = [
     { icon: FileText, label: "Offertes", href: "/quotes", active: false },
     { icon: CalendarDays, label: "Planning", href: "/planning", active: false },
     { icon: Users, label: "Klanten", href: "/customers", active: false },
-    { icon: Settings, label: "Instellingen", href: "/settings", active: false },
+    { icon: Settings, label: "Instellingen", href: "/dashboard/settings", active: false },
 ];
 
 export function Sidebar() {
