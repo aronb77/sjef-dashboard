@@ -46,3 +46,43 @@ export async function getPdfSettings() {
     if (error || !data) return null
     return data.pdf_settings
 }
+
+export async function uploadLogo(formData: FormData) {
+    const supabase = await createClient()
+
+    // 1. Auth check
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+        return { success: false, error: "Niet ingelogd" }
+    }
+
+    const file = formData.get('file') as File
+    if (!file) {
+        return { success: false, error: "Geen bestand ontvangen" }
+    }
+
+    // 2. Validation
+    if (file.size > 2 * 1024 * 1024) {
+        return { success: false, error: "Bestand is te groot (max 2MB)" }
+    }
+
+    // 3. Upload
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${user.id}/${Date.now()}_logo.${fileExt}`
+
+    const { error: uploadError } = await supabase.storage
+        .from('logos')
+        .upload(fileName, file)
+
+    if (uploadError) {
+        console.error("Upload error:", uploadError)
+        return { success: false, error: "Upload mislukt" }
+    }
+
+    // 4. Get Public URL
+    const { data } = supabase.storage
+        .from('logos')
+        .getPublicUrl(fileName)
+
+    return { success: true, url: data.publicUrl }
+}

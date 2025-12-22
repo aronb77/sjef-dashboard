@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { Upload, Settings2, Loader2 } from "lucide-react"
-import { updatePdfSettings, getPdfSettings } from "./actions"
+import { updatePdfSettings, getPdfSettings, uploadLogo } from "./actions"
 import { toast } from "sonner"
 
 // CONFIG TYPE
@@ -45,7 +45,7 @@ interface EditorSidebarProps {
     className?: string
 }
 
-import { createClient } from "@/utils/supabase/client"
+// import { createClient } from "@/utils/supabase/client"
 
 function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, className }: EditorSidebarProps) {
     const [isUploading, setIsUploading] = useState(false)
@@ -68,35 +68,21 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
 
         setIsUploading(true)
         try {
-            const supabase = createClient()
-            const { data: { user } } = await supabase.auth.getUser()
+            const formData = new FormData()
+            formData.append('file', file)
 
-            if (!user) {
-                console.error("User not found for logo upload")
-                toast.error("Je moet ingelogd zijn om te uploaden.")
-                return
+            const result = await uploadLogo(formData)
+
+            if (result.success && result.url) {
+                updateConfig('logo_url', result.url)
+                toast.success("Logo succesvol geüpload!")
+            } else {
+                console.error("Upload error:", result.error)
+                toast.error(result.error || "Kon logo niet uploaden.")
             }
-
-            const fileExt = file.name.split('.').pop()
-            const fileName = `${user.id}/${Date.now()}_logo.${fileExt}`
-
-            // Upload to 'logos' bucket
-            const { error: uploadError } = await supabase.storage
-                .from('logos')
-                .upload(fileName, file)
-
-            if (uploadError) throw uploadError
-
-            // Get Public URL
-            const { data } = supabase.storage
-                .from('logos')
-                .getPublicUrl(fileName)
-
-            updateConfig('logo_url', data.publicUrl)
-            toast.success("Logo succesvol geüpload!")
         } catch (error) {
             console.error("Upload error:", error)
-            toast.error("Kon instellingen niet laden.")
+            toast.error("Er ging iets mis bij het uploaden.")
         } finally {
             setIsUploading(false)
         }
