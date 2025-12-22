@@ -35,6 +35,10 @@ type Config = {
     itemCount: number
     logo_url: string
     phone_number?: string
+    address?: string
+    postcode?: string
+    city?: string
+    email?: string
 }
 
 interface EditorSidebarProps {
@@ -115,6 +119,44 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
                                         <Input
                                             value={config.companyName}
                                             onChange={(e) => updateConfig('companyName', e.target.value)}
+                                            className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-slate-400">Adres</Label>
+                                        <Input
+                                            value={config.address || ''}
+                                            onChange={(e) => updateConfig('address', e.target.value)}
+                                            placeholder="Kalverstraat 1"
+                                            className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-400">Postcode</Label>
+                                            <Input
+                                                value={config.postcode || ''}
+                                                onChange={(e) => updateConfig('postcode', e.target.value)}
+                                                placeholder="1012 NX"
+                                                className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-400">Stad</Label>
+                                            <Input
+                                                value={config.city || ''}
+                                                onChange={(e) => updateConfig('city', e.target.value)}
+                                                placeholder="Amsterdam"
+                                                className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-slate-400">Email (voor offerte)</Label>
+                                        <Input
+                                            value={config.email || ''}
+                                            onChange={(e) => updateConfig('email', e.target.value)}
+                                            placeholder="info@bedrijf.nl"
                                             className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
                                         />
                                     </div>
