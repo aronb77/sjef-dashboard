@@ -24,3 +24,30 @@ export async function login(formData: FormData) {
     revalidatePath('/', 'layout')
     redirect('/dashboard/settings')
 }
+
+export async function signup(formData: FormData) {
+    const supabase = await createClient()
+
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const name = formData.get('name') as string
+    const company = formData.get('company') as string
+
+    const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            data: {
+                full_name: name,
+                company_name: company,
+            },
+        },
+    })
+
+    if (error) {
+        redirect('/register?error=Could not create user')
+    }
+
+    revalidatePath('/', 'layout')
+    redirect('/dashboard/settings')
+}
