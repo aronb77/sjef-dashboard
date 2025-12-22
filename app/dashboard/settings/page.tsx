@@ -314,9 +314,9 @@ export default function ConfiguratorPage() {
                                     {isFirstPage ? (
                                         <>
                                             {/* Header (Identiteit) */}
-                                            <div className="flex justify-between items-start mb-12 border-b-2 border-slate-900 pb-8">
+                                            <div className={cn("flex justify-between items-start mb-12 border-b-2 pb-8", getAccentClass('border'))}>
                                                 {/* Links: Logo */}
-                                                <div className="bg-slate-100 w-32 h-16 rounded flex items-center justify-center text-slate-400 text-xs">
+                                                <div className={cn("w-32 h-16 rounded flex items-center justify-center text-xs", getAccentClass('bg'), "text-white")}>
                                                     LOGO
                                                 </div>
 
@@ -371,24 +371,42 @@ export default function ConfiguratorPage() {
                                         <table className="w-full text-sm">
                                             <thead className="bg-slate-50 border-b border-slate-200">
                                                 <tr>
+                                                    {config.showRowNumbers && <th className="text-left p-3 font-bold text-slate-700 uppercase tracking-wider text-xs w-12">#</th>}
                                                     <th className="text-left p-3 font-bold text-slate-700 uppercase tracking-wider text-xs">Omschrijving</th>
-                                                    <th className="text-right p-3 font-bold text-slate-700 uppercase tracking-wider text-xs">Aantal</th>
+                                                    {config.showHours && (
+                                                        <th className="text-right p-3 font-bold text-slate-700 uppercase tracking-wider text-xs">
+                                                            {config.itemCount > 0 && lineItems[0].unit ? 'Uren' : 'Aantal'}
+                                                        </th>
+                                                    )}
                                                     <th className="text-right p-3 font-bold text-slate-700 uppercase tracking-wider text-xs">Prijs</th>
+                                                    {config.showVat && <th className="text-right p-3 font-bold text-slate-700 uppercase tracking-wider text-xs">BTW</th>}
                                                     <th className="text-right p-3 font-bold text-slate-700 uppercase tracking-wider text-xs">Totaal</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {pageItems.map((item, index) => (
                                                     <tr key={index} className="border-b border-slate-100 last:border-0">
+                                                        {config.showRowNumbers && (
+                                                            <td className="p-3 align-top font-mono text-slate-500 text-xs">
+                                                                {(pageIndex * ITEMS_PAGE_N) + ((pageIndex === 0) ? 0 : (ITEMS_PAGE_1 - ITEMS_PAGE_N)) + index + 1}
+                                                            </td>
+                                                        )}
                                                         <td className="p-3 align-top font-sans text-slate-900">
                                                             {item.description}
                                                         </td>
-                                                        <td className="p-3 align-top text-right font-mono text-slate-700">
-                                                            {item.quantity}
-                                                        </td>
+                                                        {config.showHours && (
+                                                            <td className="p-3 align-top text-right font-mono text-slate-700">
+                                                                {item.quantity}
+                                                            </td>
+                                                        )}
                                                         <td className="p-3 align-top text-right font-mono text-slate-700">
                                                             {formatCurrency(item.price)}
                                                         </td>
+                                                        {config.showVat && (
+                                                            <td className="p-3 align-top text-right font-mono text-slate-700">
+                                                                21%
+                                                            </td>
+                                                        )}
                                                         <td className="p-3 align-top text-right font-mono text-slate-700">
                                                             {formatCurrency(item.quantity * item.price)}
                                                         </td>
@@ -400,26 +418,53 @@ export default function ConfiguratorPage() {
 
                                     {/* FOOTER - ONLY ON LAST PAGE */}
                                     {isLastPage && (
-                                        <div className="mt-8 ml-auto w-64">
-                                            <div className="flex justify-between mb-2 text-slate-500 text-sm">
-                                                <span>Subtotaal</span>
-                                                <span className="font-mono">{formatCurrency(subtotal)}</span>
-                                            </div>
-                                            <div className="flex justify-between mb-2 text-slate-500 text-sm">
-                                                <span>BTW (21%)</span>
-                                                <span className="font-mono">{formatCurrency(vat)}</span>
+                                        <div className="mt-auto pt-8">
+                                            <div className="flex justify-end">
+                                                <div className="w-64">
+                                                    <div className="flex justify-between mb-2 text-slate-500 text-sm">
+                                                        <span>Subtotaal</span>
+                                                        <span className="font-mono">{formatCurrency(subtotal)}</span>
+                                                    </div>
+                                                    <div className="flex justify-between mb-2 text-slate-500 text-sm">
+                                                        <span>BTW (21%)</span>
+                                                        <span className="font-mono">{formatCurrency(vat)}</span>
+                                                    </div>
+
+                                                    <div className="border-t-2 border-slate-900 pt-4 mt-4 flex justify-between items-baseline">
+                                                        <span className="font-bold text-lg text-slate-900">Totaal</span>
+                                                        <span className={cn("font-mono font-extrabold text-xl", getAccentClass('text'))}>{formatCurrency(total)}</span>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div className="border-t-2 border-slate-900 pt-4 mt-4 flex justify-between items-baseline">
-                                                <span className="font-bold text-lg text-slate-900">Totaal</span>
-                                                <span className="font-mono font-extrabold text-xl text-orange-600">{formatCurrency(total)}</span>
-                                            </div>
+                                            {/* SIGNATURE BLOCK */}
+                                            {config.showSignature && (
+                                                <div className="mt-16 flex justify-between text-sm text-slate-900">
+                                                    <div className="w-64 border-t border-slate-300 pt-4">
+                                                        <p className="font-bold mb-8">Voor akkoord opdrachtgever:</p>
+                                                        <div className="h-16 w-full bg-slate-50 border border-dashed border-slate-300 rounded mb-2"></div>
+                                                        <div className="flex justify-between text-xs text-slate-500">
+                                                            <span>Naam: ________________</span>
+                                                            <span>Datum: ___ / ___ / ______</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="w-64 border-t border-slate-300 pt-4">
+                                                        <p className="font-bold mb-8">Voor akkoord {config.companyName}:</p>
+                                                        <div className="h-16 w-full bg-slate-50 border border-dashed border-slate-300 rounded mb-2"></div>
+                                                        <div className="flex justify-between text-xs text-slate-500">
+                                                            <span>Naam: Sjef</span>
+                                                            <span>Datum: 21 / 12 / 2025</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
                                     {/* PAGE FOOTER (Absolute) */}
                                     <div className="absolute bottom-12 left-12 right-12 text-[10px] text-slate-400 text-center">
-                                        Op al onze diensten zijn de algemene voorwaarden van toepassing. KVK: 12345678.
+                                        {/* Dynamic Validity? validityDays used in text? */}
+                                        Afspraak is afspraak. Offerte is {config.validityDays} dagen geldig. Op al onze diensten zijn de algemene voorwaarden van toepassing. KVK: 12345678.
                                     </div>
                                 </div>
                             )
