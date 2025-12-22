@@ -306,14 +306,14 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
                 <Button
                     onClick={handleSave}
                     disabled={isSaving || isLoading}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold h-12 shadow-lg shadow-orange-900/20 disabled:opacity-50"
+                    className="..." // je classes
                 >
                     {isSaving ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Opslaan...
+                            Verwerken...
                         </>
-                    ) : "Template Opslaan"}
+                    ) : "Wijzigingen Opslaan"} {/* <--- Aangepast */}
                 </Button>
             </div>
         </div>
