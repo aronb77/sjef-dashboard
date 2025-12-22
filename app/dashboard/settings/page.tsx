@@ -33,7 +33,7 @@ type Config = {
     validityDays: number
     showSignature: boolean
     itemCount: number
-    logo: string
+    logo_url: string
 }
 
 interface EditorSidebarProps {
@@ -69,8 +69,16 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
         setIsUploading(true)
         try {
             const supabase = createClient()
+            const { data: { user } } = await supabase.auth.getUser()
+
+            if (!user) {
+                console.error("User not found for logo upload")
+                toast.error("Je moet ingelogd zijn om te uploaden.")
+                return
+            }
+
             const fileExt = file.name.split('.').pop()
-            const fileName = `${Date.now()}_logo.${fileExt}`
+            const fileName = `${user.id}/${Date.now()}_logo.${fileExt}`
 
             // Upload to 'logos' bucket
             const { error: uploadError } = await supabase.storage
@@ -84,11 +92,11 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
                 .from('logos')
                 .getPublicUrl(fileName)
 
-            updateConfig('logo', data.publicUrl)
+            updateConfig('logo_url', data.publicUrl)
             toast.success("Logo succesvol geüpload!")
         } catch (error) {
             console.error("Upload error:", error)
-            toast.error("Kon logo niet uploaden.")
+            toast.error("Kon instellingen niet laden.")
         } finally {
             setIsUploading(false)
         }
@@ -159,9 +167,9 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
                                             >
                                                 {isUploading ? (
                                                     <Loader2 className="h-4 w-4 text-slate-500 animate-spin" />
-                                                ) : config.logo ? (
+                                                ) : config.logo_url ? (
                                                     <div className="flex flex-col items-center gap-2">
-                                                        <img src={config.logo} alt="Logo Preview" className="h-8 max-w-[120px] object-contain" />
+                                                        <img src={config.logo_url} alt="Logo Preview" className="h-8 max-w-[120px] object-contain" />
                                                         <span className="text-xs text-orange-500">Klik om te wijzigen</span>
                                                     </div>
                                                 ) : (
@@ -282,7 +290,7 @@ export default function ConfiguratorPage() {
         validityDays: 14,
         showSignature: true,
         itemCount: 25,
-        logo: ""
+        logo_url: ""
     })
     const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
@@ -431,9 +439,9 @@ export default function ConfiguratorPage() {
                                             {/* Header (Identiteit) */}
                                             <div className={cn("flex justify-between items-start mb-12 border-b-2 pb-8", getAccentClass('border'))}>
                                                 {/* Links: Logo */}
-                                                <div className={cn("w-32 h-16 rounded flex items-center justify-center text-xs overflow-hidden", getAccentClass('bg'), !config.logo && "text-white")}>
-                                                    {config.logo ? (
-                                                        <img src={config.logo} alt="Bedrijfslogo" className="h-full w-full object-contain bg-white" />
+                                                <div className={cn("w-32 h-16 rounded flex items-center justify-center text-xs overflow-hidden", getAccentClass('bg'), !config.logo_url && "text-white")}>
+                                                    {config.logo_url ? (
+                                                        <img src={config.logo_url} alt="Bedrijfslogo" className="h-full w-full object-contain bg-white" />
                                                     ) : (
                                                         "LOGO"
                                                     )}
