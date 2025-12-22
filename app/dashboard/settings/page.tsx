@@ -23,108 +23,29 @@ import { Upload, Settings2, Loader2 } from "lucide-react"
 import { updatePdfSettings, getPdfSettings } from "./actions"
 import { toast } from "sonner"
 
-export default function ConfiguratorPage() {
-    // CONFIG STATE
-    const [config, setConfig] = useState({
-        companyName: "Bouwbedrijf Sjef B.V.",
-        accentColor: "orange-500", // 'orange-500', 'blue-600', 'slate-900'
-        showRowNumbers: true,
-        showHours: true,
-        showVat: true,
-        validityDays: 14,
-        showSignature: true,
-        itemCount: 25
-    })
-    const [isLoading, setIsLoading] = useState(true)
-    const [isSaving, setIsSaving] = useState(false)
+// CONFIG TYPE
+type Config = {
+    companyName: string
+    accentColor: string
+    showRowNumbers: boolean
+    showHours: boolean
+    showVat: boolean
+    validityDays: number
+    showSignature: boolean
+    itemCount: number
+}
 
-    // LOAD SETTINGS
-    useEffect(() => {
-        async function loadSettings() {
-            try {
-                const savedSettings = await getPdfSettings()
-                if (savedSettings && Object.keys(savedSettings).length > 0) {
-                    setConfig(prev => ({ ...prev, ...savedSettings }))
-                }
-            } catch (error) {
-                console.error("Failed to load settings", error)
-                toast.error("Kon instellingen niet laden.")
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        loadSettings()
-    }, [])
+interface EditorSidebarProps {
+    config: Config
+    isLoading: boolean
+    isSaving: boolean
+    updateConfig: (key: string, value: any) => void
+    handleSave: () => void
+    className?: string
+}
 
-    // SAVE SETTINGS
-    const handleSave = async () => {
-        setIsSaving(true)
-        try {
-            const result = await updatePdfSettings(config)
-            if (result.success) {
-                toast.success("Instellingen opgeslagen!")
-            } else {
-                toast.error(result.error || "Er ging iets mis.")
-            }
-        } catch (error) {
-            toast.error("Netwerkfout bij opslaan.")
-        } finally {
-            setIsSaving(false)
-        }
-    }
-
-    // MOCK TABLE DATA GENERATOR
-    const lineItems = Array.from({ length: config.itemCount }).map((_, i) => ({
-        description: i === 0 ? "Voorbereidende werkzaamheden en transport" :
-            i % 3 === 0 ? "Leveren en monteren van wandcontactdoos" :
-                i % 3 === 1 ? "Frezen van leidingwerk in bestaande muur" :
-                    "Afmonteren en testen van elektra groep",
-        quantity: i % 2 === 0 ? 2 : 4.5,
-        unit: 'uur',
-        price: i % 2 === 0 ? 55.00 : 45.00
-    }))
-
-    // PAGINATION LOGIC
-    // Page 1 has Header + Client Info (~350px used). Leaves room for ~12 items.
-    // Page 2+ has full height (~900px usable). Leaves room for ~24 items.
-    const ITEMS_PAGE_1 = 12
-    const ITEMS_PAGE_N = 24
-
-    const pages = []
-    let remainingItems = [...lineItems]
-
-    // First Page
-    if (remainingItems.length > 0) {
-        pages.push(remainingItems.splice(0, ITEMS_PAGE_1))
-    }
-
-    // Subsequent Pages
-    while (remainingItems.length > 0) {
-        pages.push(remainingItems.splice(0, ITEMS_PAGE_N))
-    }
-
-    const subtotal = lineItems.reduce((acc, item) => acc + (item.quantity * item.price), 0);
-    const vat = subtotal * 0.21;
-    const total = subtotal + vat;
-
-    // HELPERS
-    const updateConfig = (key: string, value: any) => {
-        setConfig(prev => ({ ...prev, [key]: value }))
-    }
-
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(amount);
-    }
-
-    const getAccentClass = (type: 'text' | 'bg' | 'border') => {
-        switch (config.accentColor) {
-            case 'blue-600': return type === 'text' ? 'text-blue-600' : type === 'bg' ? 'bg-blue-600' : 'border-blue-600';
-            case 'slate-900': return type === 'text' ? 'text-slate-900' : type === 'bg' ? 'bg-slate-900' : 'border-slate-900';
-            default: return type === 'text' ? 'text-orange-500' : type === 'bg' ? 'bg-orange-500' : 'border-orange-500';
-        }
-    }
-
-    const EditorSidebar = ({ className }: { className?: string }) => (
+function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, className }: EditorSidebarProps) {
+    return (
         <div className={cn("flex flex-col h-full bg-slate-950 text-slate-50", className)}>
             <div className="p-4 border-b border-slate-800">
                 <h2 className="text-lg font-bold tracking-tight text-white mb-2">Offerte Configurator</h2>
@@ -272,6 +193,110 @@ export default function ConfiguratorPage() {
             </div>
         </div>
     )
+}
+
+export default function ConfiguratorPage() {
+    // CONFIG STATE
+    const [config, setConfig] = useState<Config>({
+        companyName: "Bouwbedrijf Sjef B.V.",
+        accentColor: "orange-500", // 'orange-500', 'blue-600', 'slate-900'
+        showRowNumbers: true,
+        showHours: true,
+        showVat: true,
+        validityDays: 14,
+        showSignature: true,
+        itemCount: 25
+    })
+    const [isLoading, setIsLoading] = useState(true)
+    const [isSaving, setIsSaving] = useState(false)
+
+    // LOAD SETTINGS
+    useEffect(() => {
+        async function loadSettings() {
+            try {
+                const savedSettings = await getPdfSettings()
+                if (savedSettings && Object.keys(savedSettings).length > 0) {
+                    setConfig(prev => ({ ...prev, ...savedSettings }))
+                }
+            } catch (error) {
+                console.error("Failed to load settings", error)
+                toast.error("Kon instellingen niet laden.")
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        loadSettings()
+    }, [])
+
+    // SAVE SETTINGS
+    const handleSave = async () => {
+        setIsSaving(true)
+        try {
+            const result = await updatePdfSettings(config)
+            if (result.success) {
+                toast.success("Instellingen opgeslagen!")
+            } else {
+                toast.error(result.error || "Er ging iets mis.")
+            }
+        } catch (error) {
+            toast.error("Netwerkfout bij opslaan.")
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    // MOCK TABLE DATA GENERATOR
+    const lineItems = Array.from({ length: config.itemCount }).map((_, i) => ({
+        description: i === 0 ? "Voorbereidende werkzaamheden en transport" :
+            i % 3 === 0 ? "Leveren en monteren van wandcontactdoos" :
+                i % 3 === 1 ? "Frezen van leidingwerk in bestaande muur" :
+                    "Afmonteren en testen van elektra groep",
+        quantity: i % 2 === 0 ? 2 : 4.5,
+        unit: 'uur',
+        price: i % 2 === 0 ? 55.00 : 45.00
+    }))
+
+    // PAGINATION LOGIC
+    // Page 1 has Header + Client Info (~350px used). Leaves room for ~12 items.
+    // Page 2+ has full height (~900px usable). Leaves room for ~24 items.
+    const ITEMS_PAGE_1 = 12
+    const ITEMS_PAGE_N = 24
+
+    const pages = []
+    let remainingItems = [...lineItems]
+
+    // First Page
+    if (remainingItems.length > 0) {
+        pages.push(remainingItems.splice(0, ITEMS_PAGE_1))
+    }
+
+    // Subsequent Pages
+    while (remainingItems.length > 0) {
+        pages.push(remainingItems.splice(0, ITEMS_PAGE_N))
+    }
+
+    const subtotal = lineItems.reduce((acc, item) => acc + (item.quantity * item.price), 0);
+    const vat = subtotal * 0.21;
+    const total = subtotal + vat;
+
+    // HELPERS
+    const updateConfig = (key: string, value: any) => {
+        setConfig(prev => ({ ...prev, [key]: value }))
+    }
+
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(amount);
+    }
+
+    const getAccentClass = (type: 'text' | 'bg' | 'border') => {
+        switch (config.accentColor) {
+            case 'blue-600': return type === 'text' ? 'text-blue-600' : type === 'bg' ? 'bg-blue-600' : 'border-blue-600';
+            case 'slate-900': return type === 'text' ? 'text-slate-900' : type === 'bg' ? 'bg-slate-900' : 'border-slate-900';
+            default: return type === 'text' ? 'text-orange-500' : type === 'bg' ? 'bg-orange-500' : 'border-orange-500';
+        }
+    }
+
+
 
     return (
         <div className="h-[calc(100vh-theme(spacing.16))] w-full overflow-hidden flex flex-col relative">
@@ -287,7 +312,13 @@ export default function ConfiguratorPage() {
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="p-0 w-[85%] sm:w-[400px] border-r border-slate-800 bg-slate-950">
-                        <EditorSidebar />
+                        <EditorSidebar
+                            config={config}
+                            isLoading={isLoading}
+                            isSaving={isSaving}
+                            updateConfig={updateConfig}
+                            handleSave={handleSave}
+                        />
                     </SheetContent>
                 </Sheet>
             </div>
@@ -296,7 +327,14 @@ export default function ConfiguratorPage() {
 
                 {/* LEFT PANEL: EDITOR (DESKTOP) */}
                 <div className="hidden lg:flex w-[400px] shrink-0 border-r border-slate-800 h-full z-10 shadow-xl overflow-hidden">
-                    <EditorSidebar className="w-full" />
+                    <EditorSidebar
+                        className="w-full"
+                        config={config}
+                        isLoading={isLoading}
+                        isSaving={isSaving}
+                        updateConfig={updateConfig}
+                        handleSave={handleSave}
+                    />
                 </div>
 
                 {/* RIGHT PANEL: PREVIEW */}
