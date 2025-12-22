@@ -491,9 +491,17 @@ export default function ConfiguratorPage() {
                                                 {/* Rechts: Bedrijfsgegevens */}
                                                 <div className="text-right text-sm text-slate-500 leading-relaxed">
                                                     <p className="font-bold text-slate-900">{config.companyName}</p>
-                                                    <p>Bouwstraat 12</p>
-                                                    <p>1234 AB, Amsterdam</p>
-                                                    <p>info@sjef.ai</p>
+
+                                                    {/* DYNAMISCHE VELDEN: Toon alleen als ze zijn ingevuld */}
+                                                    {config.address && <p>{config.address}</p>}
+                                                    {(config.postcode || config.city) && <p>{config.postcode} {config.city}</p>}
+                                                    {config.email && <p>{config.email}</p>}
+                                                    {config.phone_number && <p>{config.phone_number}</p>}
+
+                                                    {/* Fallback als alles leeg is (zodat je iets ziet tijdens het testen) */}
+                                                    {!config.address && !config.city && !config.email && !config.phone_number && (
+                                                        <p className="opacity-30 italic">Vul adresgegevens in...</p>
+                                                    )}
                                                 </div>
                                             </div>
 
