@@ -34,6 +34,7 @@ type Config = {
     showSignature: boolean
     itemCount: number
     logo_url: string
+    phone_number?: string
 }
 
 interface EditorSidebarProps {
@@ -116,6 +117,18 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
                                             onChange={(e) => updateConfig('companyName', e.target.value)}
                                             className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
                                         />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-slate-400">WhatsApp Nummer</Label>
+                                        <Input
+                                            value={config.phone_number || ''}
+                                            onChange={(e) => updateConfig('phone_number', e.target.value)}
+                                            placeholder="31612345678"
+                                            className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
+                                        />
+                                        <p className="text-[11px] text-slate-500">
+                                            Vul je nummer in internationaal formaat in, zonder plusje (bijv. 31612345678).
+                                        </p>
                                     </div>
                                     <div className="space-y-2">
                                         <Label className="text-slate-400">Accent Kleur</Label>

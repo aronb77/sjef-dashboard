@@ -13,12 +13,22 @@ export async function updatePdfSettings(settings: any) {
         return { success: false, error: "Niet ingelogd" }
     }
 
-    // 2. Update profiles table
-    // We update the 'pdf_settings' column for the current user's entry
-    // Since 'id' in 'profiles' matches 'user.id'
+    // 2. Extract and clean phone number
+    let rawPhone = settings.phone_number || ''
+    // Remove everything except digits
+    const cleanPhone = rawPhone.replace(/[^0-9]/g, '')
+
+    // 3. Create settings object (WITHOUT phone_number)
+    const pdfSettingsToSave = { ...settings }
+    delete pdfSettingsToSave.phone_number
+
+    // 4. Update BOTH columns
     const { error: updateError } = await supabase
         .from('profiles')
-        .update({ pdf_settings: settings })
+        .update({
+            pdf_settings: pdfSettingsToSave,
+            phone_number: cleanPhone
+        })
         .eq('id', user.id)
 
     if (updateError) {
@@ -26,7 +36,7 @@ export async function updatePdfSettings(settings: any) {
         return { success: false, error: "Kon instellingen niet opslaan" }
     }
 
-    // 3. Revalidate
+    // 5. Revalidate
     revalidatePath('/dashboard/settings')
     return { success: true }
 }
@@ -39,12 +49,17 @@ export async function getPdfSettings() {
 
     const { data, error } = await supabase
         .from('profiles')
-        .select('pdf_settings')
+        .select('pdf_settings, phone_number')
         .eq('id', user.id)
         .single()
 
     if (error || !data) return null
-    return data.pdf_settings
+
+    // Merge phone_number into the settings object for the frontend
+    return {
+        ...data.pdf_settings,
+        phone_number: data.phone_number
+    }
 }
 
 export async function uploadLogo(formData: FormData) {
