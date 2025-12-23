@@ -1,3 +1,5 @@
+"use client"
+
 import {
     LayoutDashboard,
     FileText,
@@ -9,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { signOut } from "@/app/login/actions";
 
 const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard", active: true },
@@ -56,7 +59,11 @@ export function Sidebar() {
                         <span className="text-xs text-slate-500">Bouwbedrijf Sjef</span>
                     </div>
                 </div>
-                <Button variant="outline" className="w-full justify-start text-slate-500 hover:text-slate-900">
+                <Button
+                    variant="outline"
+                    className="w-full justify-start text-slate-500 hover:text-slate-900"
+                    onClick={() => signOut()}
+                >
                     <LogOut className="w-4 h-4 mr-2" />
                     Uitloggen
                 </Button>
