@@ -67,7 +67,7 @@ export function UserNav({ user }: UserNavProps) {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="/dashboard/billing" className="cursor-pointer">
+                        <Link href="/dashboard/facturatie" className="cursor-pointer">
                             <CreditCard className="mr-2 h-4 w-4" />
                             <span>Facturatie</span>
                         </Link>
