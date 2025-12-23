@@ -17,7 +17,7 @@ const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard", active: true },
     { icon: FileText, label: "Offertes", href: "/dashboard/offertes", active: false },
     { icon: CalendarDays, label: "Planning", href: "/dashboard/planning", active: false },
-    { icon: Users, label: "Klanten", href: "/dashboard/customers", active: false },
+    { icon: Users, label: "Klanten", href: "/dashboard/klanten", active: false },
     { icon: Settings, label: "Instellingen", href: "/dashboard/settings", active: false },
 ];
 
