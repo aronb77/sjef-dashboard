@@ -26,8 +26,24 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Download, CreditCard, Check, Zap } from "lucide-react"
 import { getBillingInfo } from "./actions"
 
+export const dynamic = 'force-dynamic'
+
 export default async function BillingPage() {
-    const { credits, plan, invoices } = await getBillingInfo()
+    let data;
+    try {
+        data = await getBillingInfo()
+    } catch (error) {
+        console.error("Failed to fetch billing info:", error);
+        return (
+            <div className="p-8 max-w-6xl mx-auto space-y-8">
+                <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-md">
+                    Er is een fout opgetreden bij het laden van de facturatiegegevens. Probeer het later opnieuw.
+                </div>
+            </div>
+        )
+    }
+
+    const { credits, plan, invoices } = data
 
     const isPlanActive = plan.status === 'active' || plan.status === 'trial'
     const statusColor = isPlanActive ? "bg-green-100 text-green-700 hover:bg-green-100" : "bg-slate-100 text-slate-600 hover:bg-slate-100"
