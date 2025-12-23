@@ -5,38 +5,43 @@ import { revalidatePath } from "next/cache"
 
 export async function updatePdfSettings(settings: any) {
     const supabase = await createClient()
-
-    // 1. Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
         return { success: false, error: "Niet ingelogd" }
     }
 
-    // 2. Extract and clean phone number
+    console.log("Saving for user:", user.id);
+
+    // 1. Clean phone number
     let rawPhone = settings.phone_number || ''
-    // Remove everything except digits
     const cleanPhone = rawPhone.replace(/[^0-9]/g, '')
 
-    // 3. Create settings object (WITHOUT phone_number)
+    // 2. Create settings object (WITHOUT phone_number)
     const pdfSettingsToSave = { ...settings }
     delete pdfSettingsToSave.phone_number
 
-    // 4. Update BOTH columns
-    const { error: updateError } = await supabase
+    // 3. Update with .select() to verify if it worked
+    const { data, error: updateError } = await supabase
         .from('profiles')
         .update({
             pdf_settings: pdfSettingsToSave,
             phone_number: cleanPhone
         })
         .eq('id', user.id)
+        .select()
 
     if (updateError) {
-        console.error("Error updating PDF settings:", updateError)
-        return { success: false, error: "Kon instellingen niet opslaan" }
+        console.error("Supabase Error:", updateError)
+        return { success: false, error: updateError.message }
     }
 
-    // 5. Revalidate
+    // 4. Check if a row was actually updated
+    if (!data || data.length === 0) {
+        console.error("Update failed: No row found for ID", user.id)
+        return { success: false, error: "Update mislukt: Profiel niet gevonden. Check RLS policies." }
+    }
+
     revalidatePath('/dashboard/settings')
     return { success: true }
 }
