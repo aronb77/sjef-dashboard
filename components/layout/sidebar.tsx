@@ -21,7 +21,18 @@ const menuItems = [
     { icon: Settings, label: "Instellingen", href: "/dashboard/settings", active: false },
 ];
 
-export function Sidebar() {
+// ... imports
+import { UserNav } from "@/components/dashboard/user-nav";
+
+interface SidebarProps {
+    user?: {
+        name?: string | null;
+        email?: string | null;
+        avatarUrl?: string | null;
+    }
+}
+
+export function Sidebar({ user }: SidebarProps) {
     return (
         <div className="hidden md:flex flex-col h-screen w-64 bg-slate-50 border-r border-slate-200 fixed left-0 top-0 z-40">
             <div className="p-6">
@@ -51,22 +62,12 @@ export function Sidebar() {
                 </nav>
             </div>
 
-            <div className="mt-auto p-6 border-t border-slate-200">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="h-10 w-10 rounded-full bg-slate-200" />
-                    <div className="flex flex-col">
-                        <span className="text-sm font-bold text-slate-900">Sjef B.</span>
-                        <span className="text-xs text-slate-500">Bouwbedrijf Sjef</span>
-                    </div>
-                </div>
-                <Button
-                    variant="outline"
-                    className="w-full justify-start text-slate-500 hover:text-slate-900"
-                    onClick={() => signOut()}
-                >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Uitloggen
-                </Button>
+            <div className="mt-auto p-4 border-t border-slate-200">
+                {user ? (
+                    <UserNav user={user} />
+                ) : (
+                    <div className="p-2 text-sm text-slate-400 text-center">Laden...</div>
+                )}
             </div>
         </div>
     );
