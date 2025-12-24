@@ -16,25 +16,28 @@ export async function getBillingInfo() {
         .from('profiles')
         .select('credits')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
-    const credits = profile?.credits || 0
+    // Fallback: 0 credits if profile not found or credits is null
+    const credits = profile?.credits ?? 0
     const maxCredits = 50
     const progress = Math.min((credits / maxCredits) * 100, 100)
 
     // 2. Fetch License
-    const { data: license } = await supabase
+    const { data: rawLicense } = await supabase
         .from('licenses')
         .select('*')
         .eq('user_id', user.id)
-        .single()
+        .maybeSingle()
 
     // Default fallback if no license found
+    const license = rawLicense || { status: 'free', plan: 'none', ends_at: null }
+
     const planInfo = {
-        name: license?.plan || 'Gratis',
-        status: license?.status || 'inactive',
-        price: license?.plan === 'pro' ? '€ 29' : '€ 0',
-        ends_at: license?.ends_at,
+        name: license.plan || 'Gratis',
+        status: license.status || 'inactive',
+        price: license.plan === 'pro' ? '€ 29' : '€ 0',
+        ends_at: license.ends_at,
     }
 
     // 3. Mock Invoices

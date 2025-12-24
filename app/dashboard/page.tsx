@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
+import { TopUpDialog } from "@/components/dashboard/top-up-dialog";
 import {
     Plus,
     FileText,
@@ -171,10 +172,12 @@ export default function DashboardPage() {
                             <CreditCard className="w-4 h-4" />
                         </div>
                     </div>
-                    <Button className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 h-12 px-6">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Nieuwe Opname
-                    </Button>
+                    <TopUpDialog>
+                        <Button className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 h-12 px-6">
+                            <Plus className="w-4 h-4 mr-2" />
+                            Nieuwe Opname
+                        </Button>
+                    </TopUpDialog>
                 </div>
             </header>
 
