@@ -46,8 +46,8 @@ export async function updatePdfSettings(settings: any) {
         return { success: false, error: "Update mislukt: Profiel niet gevonden. Check RLS policies." }
     }
 
-    revalidatePath('/dashboard/configurator')
-    revalidatePath('/dashboard/offertes') // Also revalidate quotes if they use this
+    revalidatePath('/configurator')
+    revalidatePath('/offertes') // Also revalidate quotes if they use this
     return { success: true }
 }
 

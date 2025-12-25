@@ -15,11 +15,11 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "@/app/login/actions";
 
 const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: FileText, label: "Offertes", href: "/dashboard/offertes" },
-    { icon: CalendarDays, label: "Planning", href: "/dashboard/planning" },
-    { icon: Users, label: "Klanten", href: "/dashboard/klanten" },
-    { icon: Settings, label: "Configurator", href: "/dashboard/configurator" },
+    { icon: LayoutDashboard, label: "Overzicht", href: "/" },
+    { icon: FileText, label: "Offertes", href: "/offertes" },
+    { icon: CalendarDays, label: "Planning", href: "/planning" },
+    { icon: Users, label: "Klanten", href: "/klanten" },
+    { icon: Settings, label: "Configurator", href: "/configurator" },
 ];
 
 // ... imports

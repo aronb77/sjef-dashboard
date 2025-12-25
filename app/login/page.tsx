@@ -13,7 +13,7 @@ export default async function LoginPage() {
 
     // Al ingelogd? Direct doorsturen!
     if (user) {
-        redirect('/dashboard/configurator')
+        redirect('/')
     }
 
     return (

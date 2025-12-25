@@ -61,13 +61,13 @@ export function UserNav({ user }: UserNavProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
-                        <Link href="/dashboard/account" className="cursor-pointer">
+                        <Link href="/account" className="cursor-pointer">
                             <User className="mr-2 h-4 w-4" />
                             <span>Account Instellingen</span>
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="/dashboard/facturatie" className="cursor-pointer">
+                        <Link href="/facturatie" className="cursor-pointer">
                             <CreditCard className="mr-2 h-4 w-4" />
                             <span>Facturatie</span>
                         </Link>

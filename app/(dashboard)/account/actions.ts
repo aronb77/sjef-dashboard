@@ -110,7 +110,7 @@ export async function updateAccountData(formData: FormData) {
         return { error: error.message }
     }
 
-    revalidatePath('/dashboard/account')
-    revalidatePath('/dashboard/configurator')
+    revalidatePath('/account')
+    revalidatePath('/configurator')
     return { success: true }
 }

@@ -59,8 +59,8 @@ export async function createCheckoutSession(priceId: string) {
                 quantity: 1,
             },
         ],
-        success_url: `${baseUrl}/dashboard?payment=success`,
-        cancel_url: `${baseUrl}/dashboard?payment=cancelled`,
+        success_url: `${baseUrl}/?payment=success`,
+        cancel_url: `${baseUrl}/?payment=cancelled`,
         customer_email: user.email,
         metadata: metadata,
         // If it's a subscription, we might want to allow promotion codes
