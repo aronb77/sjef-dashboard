@@ -7,7 +7,8 @@ import {
     CalendarDays,
     Users,
     Settings,
-    LogOut
+    LogOut,
+    Truck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -19,6 +20,7 @@ const menuItems = [
     { icon: FileText, label: "Offertes", href: "/offertes" },
     { icon: CalendarDays, label: "Planning", href: "/planning" },
     { icon: Users, label: "Klanten", href: "/klanten" },
+    { icon: Truck, label: "Leveranciers", href: "/materialen" },
     { icon: Settings, label: "Configurator", href: "/configurator" },
 ];
 
