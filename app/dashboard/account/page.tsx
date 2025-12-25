@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Separator } from "@/components/ui/separator"
 import { Loader2, Upload, Building2, MapPin, Phone, Mail, User } from "lucide-react"
 import { getAccountData, updateAccountData } from "./actions"
-import { uploadLogo } from "../settings/actions"
+import { uploadLogo } from "../configurator/actions"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 

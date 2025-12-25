@@ -10,7 +10,7 @@ export default async function RegisterPage() {
 
     // Al ingelogd? Direct doorsturen!
     if (user) {
-        redirect('/dashboard/settings')
+        redirect('/dashboard/configurator')
     }
 
     return (
