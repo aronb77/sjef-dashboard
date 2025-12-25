@@ -38,7 +38,10 @@ type Config = {
     address?: string
     postcode?: string
     city?: string
+    city?: string
     email?: string
+    kvk_number?: string
+    vat_number?: string
 }
 
 interface EditorSidebarProps {
@@ -171,6 +174,26 @@ function EditorSidebar({ config, isLoading, isSaving, updateConfig, handleSave, 
                                         <p className="text-[11px] text-slate-500">
                                             Vul je nummer in internationaal formaat in, zonder plusje (bijv. 31612345678).
                                         </p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-400">KVK Nummer</Label>
+                                            <Input
+                                                value={config.kvk_number || ''}
+                                                onChange={(e) => updateConfig('kvk_number', e.target.value)}
+                                                placeholder="12345678"
+                                                className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-400">BTW Nummer</Label>
+                                            <Input
+                                                value={config.vat_number || ''}
+                                                onChange={(e) => updateConfig('vat_number', e.target.value)}
+                                                placeholder="NL123456789B01"
+                                                className="bg-slate-900 border-slate-800 text-slate-200 focus-visible:ring-orange-500"
+                                            />
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <Label className="text-slate-400">Accent Kleur</Label>
@@ -496,7 +519,9 @@ export default function ConfiguratorPage() {
                                                     {config.address && <p>{config.address}</p>}
                                                     {(config.postcode || config.city) && <p>{config.postcode} {config.city}</p>}
                                                     {config.email && <p>{config.email}</p>}
+                                                    {config.email && <p>{config.email}</p>}
                                                     {config.phone_number && <p>{config.phone_number}</p>}
+                                                    {config.vat_number && <p>{config.vat_number}</p>}
 
                                                     {/* Fallback als alles leeg is (zodat je iets ziet tijdens het testen) */}
                                                     {!config.address && !config.city && !config.email && !config.phone_number && (
@@ -640,7 +665,7 @@ export default function ConfiguratorPage() {
                                     {/* PAGE FOOTER (Absolute) */}
                                     <div className="absolute bottom-12 left-12 right-12 text-[10px] text-slate-400 text-center">
                                         {/* Dynamic Validity? validityDays used in text? */}
-                                        Afspraak is afspraak. Offerte is {config.validityDays} dagen geldig. Op al onze diensten zijn de algemene voorwaarden van toepassing. KVK: 12345678.
+                                        Afspraak is afspraak. Offerte is {config.validityDays} dagen geldig. Op al onze diensten zijn de algemene voorwaarden van toepassing.{config.kvk_number ? ` KVK: ${config.kvk_number}.` : ''}
                                     </div>
                                 </div>
                             )

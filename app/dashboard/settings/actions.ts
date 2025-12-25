@@ -17,16 +17,20 @@ export async function updatePdfSettings(settings: any) {
     let rawPhone = settings.phone_number || ''
     const cleanPhone = rawPhone.replace(/[^0-9]/g, '')
 
-    // 2. Create settings object (WITHOUT phone_number)
+    // 2. Create settings object (WITHOUT top-level fields)
     const pdfSettingsToSave = { ...settings }
     delete pdfSettingsToSave.phone_number
+    delete pdfSettingsToSave.kvk_number
+    delete pdfSettingsToSave.vat_number
 
     // 3. Update with .select() to verify if it worked
     const { data, error: updateError } = await supabase
         .from('profiles')
         .update({
             pdf_settings: pdfSettingsToSave,
-            phone_number: cleanPhone
+            phone_number: cleanPhone,
+            kvk_number: settings.kvk_number || null,
+            vat_number: settings.vat_number || null
         })
         .eq('id', user.id)
         .select()
@@ -43,6 +47,7 @@ export async function updatePdfSettings(settings: any) {
     }
 
     revalidatePath('/dashboard/settings')
+    revalidatePath('/dashboard/offertes') // Also revalidate quotes if they use this
     return { success: true }
 }
 
@@ -54,16 +59,18 @@ export async function getPdfSettings() {
 
     const { data, error } = await supabase
         .from('profiles')
-        .select('pdf_settings, phone_number')
+        .select('pdf_settings, phone_number, kvk_number, vat_number')
         .eq('id', user.id)
         .single()
 
     if (error || !data) return null
 
-    // Merge phone_number into the settings object for the frontend
+    // Merge separate columns into the settings object for the frontend
     return {
         ...data.pdf_settings,
-        phone_number: data.phone_number
+        phone_number: data.phone_number,
+        kvk_number: data.kvk_number,
+        vat_number: data.vat_number
     }
 }
 
