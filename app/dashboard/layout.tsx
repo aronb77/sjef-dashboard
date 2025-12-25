@@ -18,11 +18,13 @@ export default async function DashboardLayout({
 
     if (user) {
         // Attempt to get name from profile
-        const { data: profile } = await supabase.from('profiles').select('first_name, last_name, company_name').eq('id', user.id).single();
+        const { data: profile } = await supabase.from('profiles').select('first_name, last_name, company_name, credits').eq('id', user.id).single();
         if (profile) {
             const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
             // Prefer Full Name, then Company Name, then "Sjef User"
             userDetails.name = fullName || profile.company_name || userDetails.name;
+            // Add credits to userDetails, defaulting to 0
+            (userDetails as any).credits = profile.credits || 0;
         }
     }
 

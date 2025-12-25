@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
 import { TopUpDialog } from "@/components/dashboard/top-up-dialog";
+import { PaymentSuccessToast } from "@/components/dashboard/payment-success-toast";
 import {
     Plus,
     FileText,
@@ -276,6 +277,7 @@ export default function DashboardPage() {
                 </div>
 
             </div>
+            <PaymentSuccessToast />
         </div>
     );
 }
