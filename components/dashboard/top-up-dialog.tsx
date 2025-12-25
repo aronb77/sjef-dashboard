@@ -104,6 +104,10 @@ export function TopUpDialog({ children }: { children?: React.ReactNode }) {
                                         <ul className="space-y-2 text-sm text-slate-600">
                                             <li className="flex items-center gap-2">
                                                 <Check className="w-4 h-4 text-green-500" />
+                                                <span className="font-semibold text-slate-900">{plan.credits} credits / maand</span>
+                                            </li>
+                                            <li className="flex items-center gap-2">
+                                                <Check className="w-4 h-4 text-green-500" />
                                                 <span>Alle basis functies</span>
                                             </li>
                                             <li className="flex items-center gap-2">

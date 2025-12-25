@@ -30,15 +30,20 @@ export async function createCheckoutSession(priceId: string) {
     const isSubscription = !!subscriptionPlan
     const mode = isSubscription ? 'subscription' : 'payment'
 
-    let metadata = {}
+    let metadata: Record<string, string> = {
+        userId: user.id
+    }
+
     if (creditPackage) {
         metadata = {
+            ...metadata,
             creditsToAdd: creditPackage.credits.toString(),
-            userId: user.id
         }
-    } else {
+    } else if (subscriptionPlan && subscriptionPlan.credits) {
+        // Give initial credits for the first month immediately via webhook
         metadata = {
-            userId: user.id
+            ...metadata,
+            creditsToAdd: subscriptionPlan.credits.toString(),
         }
     }
 
