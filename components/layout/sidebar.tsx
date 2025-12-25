@@ -1,5 +1,6 @@
 "use client"
 
+import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
     FileText,
@@ -14,11 +15,11 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "@/app/login/actions";
 
 const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard", active: true },
-    { icon: FileText, label: "Offertes", href: "/dashboard/offertes", active: false },
-    { icon: CalendarDays, label: "Planning", href: "/dashboard/planning", active: false },
-    { icon: Users, label: "Klanten", href: "/dashboard/klanten", active: false },
-    { icon: Settings, label: "Instellingen", href: "/dashboard/settings", active: false },
+    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+    { icon: FileText, label: "Offertes", href: "/dashboard/offertes" },
+    { icon: CalendarDays, label: "Planning", href: "/dashboard/planning" },
+    { icon: Users, label: "Klanten", href: "/dashboard/klanten" },
+    { icon: Settings, label: "Instellingen", href: "/dashboard/settings" },
 ];
 
 // ... imports
@@ -34,6 +35,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ user }: SidebarProps) {
+    const pathname = usePathname();
+
     return (
         <div className="hidden md:flex flex-col h-screen w-64 bg-slate-50 border-r border-slate-200 fixed left-0 top-0 z-40">
             <div className="p-6">
@@ -59,21 +62,24 @@ export function Sidebar({ user }: SidebarProps) {
                 )}
 
                 <nav className="space-y-1">
-                    {menuItems.map((item) => (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={cn(
-                                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                                item.active
-                                    ? "bg-orange-50 text-orange-600"
-                                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                            )}
-                        >
-                            <item.icon className={cn("w-5 h-5", item.active ? "text-orange-500" : "text-slate-400")} />
-                            {item.label}
-                        </Link>
-                    ))}
+                    {menuItems.map((item) => {
+                        const isActive = pathname === item.href;
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={cn(
+                                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                                    isActive
+                                        ? "bg-orange-50 text-orange-600"
+                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                                )}
+                            >
+                                <item.icon className={cn("w-5 h-5", isActive ? "text-orange-500" : "text-slate-400")} />
+                                {item.label}
+                            </Link>
+                        );
+                    })}
                 </nav>
             </div>
 
