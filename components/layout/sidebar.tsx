@@ -19,7 +19,7 @@ const menuItems = [
     { icon: FileText, label: "Offertes", href: "/dashboard/offertes" },
     { icon: CalendarDays, label: "Planning", href: "/dashboard/planning" },
     { icon: Users, label: "Klanten", href: "/dashboard/klanten" },
-    { icon: Settings, label: "Instellingen", href: "/dashboard/settings" },
+    { icon: Settings, label: "Configurator", href: "/dashboard/configurator" },
 ];
 
 // ... imports

@@ -111,6 +111,6 @@ export async function updateAccountData(formData: FormData) {
     }
 
     revalidatePath('/dashboard/account')
-    revalidatePath('/dashboard/settings')
+    revalidatePath('/dashboard/configurator')
     return { success: true }
 }
