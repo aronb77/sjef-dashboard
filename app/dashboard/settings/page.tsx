@@ -38,7 +38,6 @@ type Config = {
     address?: string
     postcode?: string
     city?: string
-    city?: string
     email?: string
     kvk_number?: string
     vat_number?: string
@@ -519,12 +518,19 @@ export default function ConfiguratorPage() {
                                                     {config.address && <p>{config.address}</p>}
                                                     {(config.postcode || config.city) && <p>{config.postcode} {config.city}</p>}
                                                     {config.email && <p>{config.email}</p>}
-                                                    {config.email && <p>{config.email}</p>}
                                                     {config.phone_number && <p>{config.phone_number}</p>}
-                                                    {config.vat_number && <p>{config.vat_number}</p>}
+
+                                                    {/* KVK & BTW Format */}
+                                                    {(config.kvk_number || config.vat_number) && (
+                                                        <p className="mt-2 text-xs text-slate-400">
+                                                            {config.kvk_number && `KVK: ${config.kvk_number}`}
+                                                            {config.kvk_number && config.vat_number && " | "}
+                                                            {config.vat_number && `BTW: ${config.vat_number}`}
+                                                        </p>
+                                                    )}
 
                                                     {/* Fallback als alles leeg is (zodat je iets ziet tijdens het testen) */}
-                                                    {!config.address && !config.city && !config.email && !config.phone_number && (
+                                                    {!config.address && !config.city && !config.email && !config.phone_number && !config.kvk_number && (
                                                         <p className="opacity-30 italic">Vul adresgegevens in...</p>
                                                     )}
                                                 </div>

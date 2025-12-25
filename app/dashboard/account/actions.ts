@@ -39,8 +39,8 @@ export async function getAccountData() {
     return {
         companyName: profile.company_name || profile.bedrijfs_naam || '', // fallback to legacy
         phone: profile.phone_number || '',
-        kvk: profile.kvk_nummer || '',
-        btw: profile.btw_nummer || '',
+        kvk: profile.kvk_number || '',
+        btw: profile.vat_number || '',
         // Address data from pdf_settings
         address: (pdfSettings as any).address || '',
         postcode: (pdfSettings as any).postcode || '',
@@ -97,11 +97,10 @@ export async function updateAccountData(formData: FormData) {
         .from('profiles')
         .update({
             // company_name is assigned below
-
             company_name: companyName,
             phone_number: phone,
-            kvk_nummer: kvk,
-            btw_nummer: btw,
+            kvk_number: kvk,
+            vat_number: btw, // Map 'btw' form field to 'vat_number' column
             pdf_settings: updatedPdfSettings
         })
         .eq('id', user.id)
