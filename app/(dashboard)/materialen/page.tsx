@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { createClient } from '@/utils/supabase/client' // Need client component supabase for upload
 import { getFiles, saveFileRecord, deleteFile, type UploadedFile } from './actions'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
     Table,
@@ -206,7 +206,7 @@ export default function MaterialsPage() {
                         </p>
 
                         <label htmlFor="file-upload">
-                            <div className={cn(Button({ variant: "default" }), "cursor-pointer bg-slate-900 hover:bg-slate-800 text-white")}>
+                            <div className={cn(buttonVariants({ variant: "default" }), "cursor-pointer bg-slate-900 hover:bg-slate-800 text-white")}>
                                 <FileText className="mr-2 h-4 w-4" />
                                 Bestand Kiezen
                             </div>
