@@ -48,13 +48,7 @@ export async function createCheckoutSession(priceId: string) {
     }
 
     // 2. Create Session
-    const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-
-    // For subscriptions, we might need to check if they already have a customer ID in our DB
-    // But for this MVP, we'll let Stripe handle customer creation or use email mapping if possible.
-    // Better: Retrieve customer ID from 'subscriptions' table if exists, but we'll stick to simple flow.
-    // If we have a customer_id in profiles/subscriptions, we should use it. 
-    // For now, pass email to pre-fill.
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
     const sessionConfig: Stripe.Checkout.SessionCreateParams = {
         mode: mode,
@@ -65,8 +59,8 @@ export async function createCheckoutSession(priceId: string) {
                 quantity: 1,
             },
         ],
-        success_url: `${origin}/dashboard?payment=success`,
-        cancel_url: `${origin}/dashboard?payment=cancelled`,
+        success_url: `${baseUrl}/dashboard?payment=success`,
+        cancel_url: `${baseUrl}/dashboard?payment=cancelled`,
         customer_email: user.email,
         metadata: metadata,
         // If it's a subscription, we might want to allow promotion codes
