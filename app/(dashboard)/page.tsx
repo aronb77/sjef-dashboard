@@ -1,11 +1,9 @@
 "use client"
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar } from "@/components/ui/calendar";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
 import { TopUpDialog } from "@/components/dashboard/top-up-dialog";
 import { PaymentSuccessToast } from "@/components/dashboard/payment-success-toast";
@@ -35,8 +33,6 @@ interface Quote {
 }
 
 export default function DashboardPage() {
-    const [date, setDate] = useState<Date | undefined>(new Date());
-
     // Mock Data
     const profile: Profile = {
         id: "mock-user-1",
@@ -211,71 +207,35 @@ export default function DashboardPage() {
                 <RevenueChart />
             </div>
 
-            {/* Main Content Area: 2 Columns */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                {/* Left Column: Quote List with Tabs (2/3 width) */}
-                <div className="lg:col-span-2">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-bold text-slate-900">Recente Klussen</h2>
-                        <Button variant="ghost" size="sm" className="text-slate-500 hover:text-slate-900">
-                            Alles bekijken
-                        </Button>
-                    </div>
-
-                    <Tabs defaultValue="all" className="w-full">
-                        <TabsList className="bg-slate-100 p-1 rounded-lg w-full justify-start mb-0 rounded-b-none border-b border-slate-200">
-                            <TabsTrigger value="all" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Alles</TabsTrigger>
-                            <TabsTrigger value="concept" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Concept</TabsTrigger>
-                            <TabsTrigger value="sent" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Verzonden</TabsTrigger>
-                            <TabsTrigger value="accepted" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Geaccepteerd</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="all" className="mt-0">
-                            <QuoteList quotes={allQuotes} />
-                        </TabsContent>
-                        <TabsContent value="concept" className="mt-0">
-                            <QuoteList quotes={allQuotes.filter(q => q.status === 'concept')} />
-                        </TabsContent>
-                        <TabsContent value="sent" className="mt-0">
-                            <QuoteList quotes={allQuotes.filter(q => q.status === 'sent')} />
-                        </TabsContent>
-                        <TabsContent value="accepted" className="mt-0">
-                            <QuoteList quotes={allQuotes.filter(q => q.status === 'accepted')} />
-                        </TabsContent>
-                    </Tabs>
+            {/* Main Content Area: Full Width Quote List */}
+            <div className="w-full">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-slate-900">Recente Klussen</h2>
+                    <Button variant="ghost" size="sm" className="text-slate-500 hover:text-slate-900">
+                        Alles bekijken
+                    </Button>
                 </div>
 
-                {/* Right Column: Agenda (1/3 width) */}
-                <div className="space-y-6">
-                    <div>
-                        <h2 className="text-xl font-bold text-slate-900 mb-4">Agenda</h2>
-                        <Card className="rounded-xl border-slate-200 shadow-sm bg-white p-4">
-                            <Calendar
-                                mode="single"
-                                selected={date}
-                                onSelect={setDate}
-                                className="rounded-md w-full flex justify-center"
-                                modifiers={{
-                                    booked: [new Date(Date.now() + 1000 * 60 * 60 * 24 * 2)] // Mock event
-                                }}
-                                modifiersStyles={{
-                                    booked: { border: '2px solid #F97316' }
-                                }}
-                            />
-                            <div className="mt-4 pt-4 border-t border-slate-100">
-                                <h3 className="text-sm font-semibold text-slate-900 mb-2">Vandaag</h3>
-                                <div className="flex items-center gap-3 p-3 rounded-lg bg-orange-50 border border-orange-100">
-                                    <div className="h-2 w-2 rounded-full bg-orange-500" />
-                                    <div className="flex flex-col">
-                                        <span className="text-sm font-medium text-slate-900">Opname: Herengracht</span>
-                                        <span className="text-xs text-slate-500 font-mono">14:00 - 15:30</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-                    </div>
-                </div>
-
+                <Tabs defaultValue="all" className="w-full">
+                    <TabsList className="bg-slate-100 p-1 rounded-lg w-full justify-start mb-0 rounded-b-none border-b border-slate-200">
+                        <TabsTrigger value="all" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Alles</TabsTrigger>
+                        <TabsTrigger value="concept" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Concept</TabsTrigger>
+                        <TabsTrigger value="sent" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Verzonden</TabsTrigger>
+                        <TabsTrigger value="accepted" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Geaccepteerd</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="all" className="mt-0">
+                        <QuoteList quotes={allQuotes} />
+                    </TabsContent>
+                    <TabsContent value="concept" className="mt-0">
+                        <QuoteList quotes={allQuotes.filter(q => q.status === 'concept')} />
+                    </TabsContent>
+                    <TabsContent value="sent" className="mt-0">
+                        <QuoteList quotes={allQuotes.filter(q => q.status === 'sent')} />
+                    </TabsContent>
+                    <TabsContent value="accepted" className="mt-0">
+                        <QuoteList quotes={allQuotes.filter(q => q.status === 'accepted')} />
+                    </TabsContent>
+                </Tabs>
             </div>
             <PaymentSuccessToast />
         </div>

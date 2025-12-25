@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
     FileText,
-    CalendarDays,
     Users,
     Settings,
     LogOut,
@@ -18,7 +17,6 @@ import { signOut } from "@/app/login/actions";
 const menuItems = [
     { icon: LayoutDashboard, label: "Overzicht", href: "/" },
     { icon: FileText, label: "Offertes", href: "/offertes" },
-    { icon: CalendarDays, label: "Planning", href: "/planning" },
     { icon: Users, label: "Klanten", href: "/klanten" },
     { icon: Truck, label: "Leveranciers", href: "/materialen" },
     { icon: Settings, label: "Configurator", href: "/configurator" },
